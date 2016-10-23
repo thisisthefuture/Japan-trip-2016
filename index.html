@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Alice goes to Japan</title>
+  <meta name="viewport" content="initial-scale=1.0">
+  <meta charset="utf-8">
+  <style>
+  /* Always set the map height explicitly to define the size of the div
+  * element that contains the map. */
+  #map {
+    height: 100%;
+  }
+  /* Optional: Makes the sample page fill the window. */
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+  var map;
+  var circlePath;
+  var lineSymbol = {
+    path: 'M 0,-2.5 0,2.5',
+    strokeOpacity: 1,
+    scale: 2
+  };
+
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 35.009790, lng: 136.116196},
+      zoom: 6,
+      styles: [{"featureType":"landscape","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","stylers":[{"saturation":-100},{"lightness":51},{"visibility":"simplified"}]},{"featureType":"road.highway","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"road.arterial","stylers":[{"saturation":-100},{"lightness":30},{"visibility":"on"}]},{"featureType":"road.local","stylers":[{"saturation":-100},{"lightness":40},{"visibility":"on"}]},{"featureType":"transit","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"administrative.province","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"on"},{"lightness":-25},{"saturation":-100}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]}]
+
+    });
+
+    var marker1, marker2;
+    var geodesic;
+    circlePath = google.maps.SymbolPath.CIRCLE;
+
+    var script = document.createElement('script');
+    script.src = 'route_GeoJSONP.js';
+    document.getElementsByTagName('head')[0].appendChild(script);
+
+    // marker1 = new google.maps.Marker({
+    //   map: map,
+    //   draggable: false,
+    //   position: {lat: 47.4502535, lng: -122.3110052},
+    //   icon: {
+    //     path: circlePath,
+    //     scale: 3
+    //   }
+    // });
+    //
+    // marker2 = new google.maps.Marker({
+    //   map: map,
+    //   draggable: false,
+    //   position: {lat: 35.709283, lng: 139.731906},
+    //   icon: {
+    //     path: circlePath,
+    //     scale: 3
+    //   }
+    // });
+    //
+    // marker3 = new google.maps.Marker({
+    //   map: map,
+    //   draggable: false,
+    //   position: {lat: 34.2187097, lng: 134.0163585},
+    //   icon: {
+    //     path: circlePath,
+    //     scale: 3
+    //   }
+    // });
+
+
+
+    //
+    // geodesicPoly = new google.maps.Polyline({
+    //   //  strokeColor: '#545454',
+    //   strokeOpacity: 0.0,
+    //   //  strokeWeight: 3,
+    //   geodesic: true,
+    //   icons: [{
+    //     icon: lineSymbol,
+    //     offset: '0',
+    //     repeat: '20px'
+    //   }],
+    //   map: map
+    // });
+    //
+    // geodesicPoly2 = new google.maps.Polyline({
+    //   //  strokeColor: '#545454',
+    //   strokeOpacity: 0.0,
+    //   //  strokeWeight: 3,
+    //   geodesic: true,
+    //   icons: [{
+    //     icon: lineSymbol,
+    //     offset: '0',
+    //     repeat: '20px'
+    //   }],
+    //   map: map
+    // });
+    //
+    // var path = [marker1.getPosition(), marker2.getPosition(), marker3.getPosition()];
+    // var path2 = [marker2.getPosition(), marker3.getPosition()]
+    // geodesicPoly.setPath(path);
+
+
+  }
+
+  window.eqfeed_callback = function(results) {
+    var tripPath = [];
+    var markers = [];
+    var geodesicPoly = new google.maps.Polyline({
+      //  strokeColor: '#545454',
+      strokeOpacity: 0.0,
+      //  strokeWeight: 3,
+      geodesic: true,
+      icons: [{
+        icon: lineSymbol,
+        offset: '0',
+        repeat: '20px'
+      }],
+      map: map
+    });
+
+    var circleImage = {
+      url: 'public/img/circleMarker.png',
+      size: new google.maps.Size(25, 25),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(12.5, 12.5)
+    };
+
+    for (var i = 0; i < results.features.length; i++) {
+      var coords = results.features[i].geometry.coordinates;
+      var latLng = new google.maps.LatLng(coords[1],coords[0]);
+      var marker = new google.maps.Marker({
+        position: latLng,
+        icon: circleImage,
+//        icon: {
+//          path: circlePath,
+//          scale: 3
+//        },
+        map: map
+      });
+      tripPath.push(marker.getPosition());
+    }
+
+    var markerCluster = new MarkerClusterer(map, markers,
+      {imagePath: 'public/img/circleMarker.png'}
+    );
+
+
+    //geodesicPoly.setPath(tripPath);
+}
+  </script>
+  <script src="MarkerClusterer.js">
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuSqWbokxwFOIA5oy6gRlAXegadcLl_fY&callback=initMap"
+  async defer></script>
+</body>
+</html>
