@@ -37,77 +37,12 @@
 
     });
 
-    var marker1, marker2;
     var geodesic;
     circlePath = google.maps.SymbolPath.CIRCLE;
 
     var script = document.createElement('script');
     script.src = 'route_GeoJSONP.js';
     document.getElementsByTagName('head')[0].appendChild(script);
-
-    // marker1 = new google.maps.Marker({
-    //   map: map,
-    //   draggable: false,
-    //   position: {lat: 47.4502535, lng: -122.3110052},
-    //   icon: {
-    //     path: circlePath,
-    //     scale: 3
-    //   }
-    // });
-    //
-    // marker2 = new google.maps.Marker({
-    //   map: map,
-    //   draggable: false,
-    //   position: {lat: 35.709283, lng: 139.731906},
-    //   icon: {
-    //     path: circlePath,
-    //     scale: 3
-    //   }
-    // });
-    //
-    // marker3 = new google.maps.Marker({
-    //   map: map,
-    //   draggable: false,
-    //   position: {lat: 34.2187097, lng: 134.0163585},
-    //   icon: {
-    //     path: circlePath,
-    //     scale: 3
-    //   }
-    // });
-
-
-
-    //
-    // geodesicPoly = new google.maps.Polyline({
-    //   //  strokeColor: '#545454',
-    //   strokeOpacity: 0.0,
-    //   //  strokeWeight: 3,
-    //   geodesic: true,
-    //   icons: [{
-    //     icon: lineSymbol,
-    //     offset: '0',
-    //     repeat: '20px'
-    //   }],
-    //   map: map
-    // });
-    //
-    // geodesicPoly2 = new google.maps.Polyline({
-    //   //  strokeColor: '#545454',
-    //   strokeOpacity: 0.0,
-    //   //  strokeWeight: 3,
-    //   geodesic: true,
-    //   icons: [{
-    //     icon: lineSymbol,
-    //     offset: '0',
-    //     repeat: '20px'
-    //   }],
-    //   map: map
-    // });
-    //
-    // var path = [marker1.getPosition(), marker2.getPosition(), marker3.getPosition()];
-    // var path2 = [marker2.getPosition(), marker3.getPosition()]
-    // geodesicPoly.setPath(path);
-
 
   }
 
@@ -146,15 +81,24 @@
 //        },
         map: map
       });
+      markers.push(marker);
       tripPath.push(marker.getPosition());
+
     }
 
     var markerCluster = new MarkerClusterer(map, markers,
-      {imagePath: 'public/img/circleMarker.png'}
+      {
+        styles: [{
+          url: 'public/img/Ellipse.png',
+          height: 25,
+          width: 25,
+        }],
+        imagePath: 'public/img'
+      }
     );
 
 
-    //geodesicPoly.setPath(tripPath);
+//    geodesicPoly.setPath(tripPath);
 }
   </script>
   <script src="MarkerClusterer.js">
