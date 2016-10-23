@@ -1,4 +1,4 @@
-eqfeed_callback({
+eqfeed_callback_routes({
 "type": "FeatureCollection",
 
 "features": [

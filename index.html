@@ -8,7 +8,21 @@
   /* Always set the map height explicitly to define the size of the div
   * element that contains the map. */
   #map {
-    height: 100%;
+    height: 500px;
+    width: 100%;
+    position: absolute;
+    top: 100px;
+    z-index: 0;
+  }
+
+  #miniMap {
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    top: 398px;
+    border: 1px solid #000;
+    left: 0;
+    z-index: 1000000;
   }
   /* Optional: Makes the sample page fill the window. */
   html, body {
@@ -20,36 +34,39 @@
 </head>
 <body>
   <div id="map"></div>
+  <div id="miniMap"></div>
+
   <script>
-  var map;
+  var map, miniMap;
   var circlePath;
+  var markers = [];
   var lineSymbol = {
     path: 'M 0,-2.5 0,2.5',
     strokeOpacity: 1,
     scale: 2
   };
 
+  var geodesicPoly;
+
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 35.009790, lng: 136.116196},
+      center: { lat: 35.279295927636994, lng: 136.10520967187495},
       zoom: 6,
       styles: [{"featureType":"landscape","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","stylers":[{"saturation":-100},{"lightness":51},{"visibility":"simplified"}]},{"featureType":"road.highway","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"road.arterial","stylers":[{"saturation":-100},{"lightness":30},{"visibility":"on"}]},{"featureType":"road.local","stylers":[{"saturation":-100},{"lightness":40},{"visibility":"on"}]},{"featureType":"transit","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"administrative.province","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"on"},{"lightness":-25},{"saturation":-100}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]}]
 
     });
 
+
+    miniMap = new google.maps.Map(document.getElementById('miniMap'), {
+      center: {lat: 24.340661000000008, lng: 124.02923722656246},
+      zoom: 9,
+      disableDefaultUI: true,
+      styles: [{"featureType":"landscape","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","stylers":[{"saturation":-100},{"lightness":51},{"visibility":"simplified"}]},{"featureType":"road.highway","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"road.arterial","stylers":[{"saturation":-100},{"lightness":30},{"visibility":"on"}]},{"featureType":"road.local","stylers":[{"saturation":-100},{"lightness":40},{"visibility":"on"}]},{"featureType":"transit","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"administrative.province","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"on"},{"lightness":-25},{"saturation":-100}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]}]
+    });
+
     var geodesic;
     circlePath = google.maps.SymbolPath.CIRCLE;
-
-    var script = document.createElement('script');
-    script.src = 'route_GeoJSONP.js';
-    document.getElementsByTagName('head')[0].appendChild(script);
-
-  }
-
-  window.eqfeed_callback = function(results) {
-    var tripPath = [];
-    var markers = [];
-    var geodesicPoly = new google.maps.Polyline({
+    geodesicPoly = new google.maps.Polyline({
       //  strokeColor: '#545454',
       strokeOpacity: 0.0,
       //  strokeWeight: 3,
@@ -62,8 +79,71 @@
       map: map
     });
 
+    var script_routes = document.createElement('script');
+    script_routes.src = 'route_GeoJSONP.js';
+    document.getElementsByTagName('head')[0].appendChild(script_routes);
+
+    var script_cities = document.createElement('script');
+    script_cities.src = 'Cities_GeoJSONP.js';
+    document.getElementsByTagName('head')[0].appendChild(script_cities);
+
+    var script_small_cities = document.createElement('script');
+    script_small_cities.src = 'Okanawa_Cities_GeoJSONP.js';
+    document.getElementsByTagName('head')[0].appendChild(script_small_cities);
+
+    var script_small_cities_takamatsu = document.createElement('script');
+    script_small_cities_takamatsu.src = 'Takamatsu_Islands_GeoJSONP.js';
+    document.getElementsByTagName('head')[0].appendChild(script_small_cities_takamatsu);
+
+
+  }
+
+// maps the cities near Takamatsu
+  window.eqfeed_callback_cities_takamatsu = function(results) {
+    var markers_takamatsu_islands = [];
     var circleImage = {
-      url: 'public/img/circleMarker.png',
+      url: 'public/img/Ellipse.png',
+      size: new google.maps.Size(25, 25),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(12.5, 12.5)
+    };
+
+    for (var i = 0; i < results.features.length; i++) {
+      var coords = results.features[i].geometry.coordinates;
+      var latLng = new google.maps.LatLng(coords[1],coords[0]);
+      var marker = new google.maps.Marker({
+        position: latLng,
+        icon: circleImage,
+        cursor: null,
+//        icon: {
+//          path: circlePath,
+//          scale: 3
+//        },
+        map: map
+      });
+      markers_takamatsu_islands.push(marker);
+
+    }
+
+    var markerCluster = new MarkerClusterer(map, markers_takamatsu_islands,
+      {
+        styles: [{
+          url: 'public/img/Ellipse.png',
+          height: 25,
+          width: 25,
+        }],
+        minimumClusterSize: 2,
+        averageCenter: true,
+        imagePath: 'public/img'
+      }
+    );
+  }
+
+// maps the small cities for the mini-map
+  window.eqfeed_callback_cities_small = function(results) {
+    var markers_smallcities = [];
+    var circleImage = {
+      url: 'public/img/Ellipse.png',
       size: new google.maps.Size(25, 25),
       origin: new google.maps.Point(0, 0),
       anchor: new google.maps.Point(12.5, 12.5)
@@ -79,31 +159,85 @@
 //          path: circlePath,
 //          scale: 3
 //        },
+        map: miniMap
+      });
+      markers_smallcities.push(marker);
+
+    }
+
+    miniMap.addListener('center_changed', function () {
+      console.log("new center: " + miniMap.getCenter());
+    //  geodesicPoly.setPath(markerCluster.getClusterCenters());
+    });
+  }
+
+  // maps all the cities
+  window.eqfeed_callback_cities = function(results) {
+
+    var circleImage = {
+      url: 'public/img/Ellipse.png',
+      size: new google.maps.Size(25, 25),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(12.5, 12.5)
+    };
+
+    for (var i = 0; i < results.features.length; i++) {
+      var coords = results.features[i].geometry.coordinates;
+      var latLng = new google.maps.LatLng(coords[1],coords[0]);
+      var marker = new google.maps.Marker({
+        position: latLng,
+        icon: circleImage,
         map: map
       });
       markers.push(marker);
+
+    }
+
+
+
+  //  geodesicPoly.setPath(markerCluster.getClusterCenters());
+    map.addListener('center_changed', function () {
+      console.log("new center: " + map.getCenter());
+      //geodesicPoly.setPath(markerCluster.getClusterCenters());
+    });
+  }
+
+  // maps the routes
+  window.eqfeed_callback_routes = function(results) {
+    var tripPath = [];
+
+    var circleImage = {
+      url: 'public/img/Ellipse.png',
+      size: new google.maps.Size(25, 25),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(12.5, 12.5)
+    };
+
+    for (var i = 0; i < results.features.length; i++) {
+      var coords = results.features[i].geometry.coordinates;
+      var latLng = new google.maps.LatLng(coords[1],coords[0]);
+      var marker = new google.maps.Marker({
+        position: latLng,
+        icon: {
+         path: circlePath,
+         scale: 0
+        },
+        map: map
+      });
       tripPath.push(marker.getPosition());
 
     }
 
-    var markerCluster = new MarkerClusterer(map, markers,
-      {
-        styles: [{
-          url: 'public/img/Ellipse.png',
-          height: 25,
-          width: 25,
-        }],
-        imagePath: 'public/img'
-      }
-    );
+  // geodesicPoly.setPath(tripPath);
 
 
-//    geodesicPoly.setPath(tripPath);
 }
   </script>
   <script src="MarkerClusterer.js">
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuSqWbokxwFOIA5oy6gRlAXegadcLl_fY&callback=initMap"
   async defer></script>
+
+
 </body>
 </html>

@@ -82,7 +82,6 @@ function MarkerClusterer(map, opt_markers, opt_options) {
    *  @type {Array.<Cluster>}
    */
   this.clusters_ = [];
-
   this.sizes = [53, 56, 66, 78, 90];
 
   /**
@@ -325,6 +324,25 @@ MarkerClusterer.prototype.getTotalMarkers = function() {
   return this.markers_.length;
 };
 
+/**
+ *  Returns an array of the clusterer centers
+ *
+ *  @return {Array.google.latLng} Array of latLng.
+ */
+MarkerClusterer.prototype.getClusterCenters = function() {
+  console.log('centerClustersCenters');
+  if (!this.ready_) {
+    return;
+  } else
+  {
+    var clusterCenters = [];
+    for (var i = 0; i < this.clusters_.length; i++) {
+      cluster = this.clusters_[i];
+      clusterCenters.push(cluster.getCenter());
+      }
+    return clusterCenters;
+  }
+};
 
 /**
  *  Sets the max zoom for the clusterer.
@@ -530,6 +548,7 @@ MarkerClusterer.prototype.setReady_ = function(ready) {
   if (!this.ready_) {
     this.ready_ = ready;
     this.createClusters_();
+    // send some createdCluster event?
   }
 };
 
@@ -736,6 +755,12 @@ MarkerClusterer.prototype.distanceBetweenPoints_ = function(p1, p2) {
   return d;
 };
 
+/**
+ * Returns the array of clusters
+ */
+MarkerClusterer.prototype.getClusters_ = function() {
+  return this.clusters_;
+}
 
 /**
  * Add a marker to a cluster, or creates a new cluster.
@@ -1288,6 +1313,8 @@ MarkerClusterer.prototype['getTotalClusters'] =
     MarkerClusterer.prototype.getTotalClusters;
 MarkerClusterer.prototype['getTotalMarkers'] =
     MarkerClusterer.prototype.getTotalMarkers;
+MarkerClusterer.prototype['getClusterCenters'] =
+    MarkerClusterer.prototype.getClusterCenters;
 MarkerClusterer.prototype['redraw'] = MarkerClusterer.prototype.redraw;
 MarkerClusterer.prototype['removeMarker'] =
     MarkerClusterer.prototype.removeMarker;

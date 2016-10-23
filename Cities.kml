@@ -76,6 +76,13 @@
 			</Point>
 		</Placemark>
 		<Placemark>
+			<name>Himeji</name>
+			<styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>134.68535280000003,34.815149,0.0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
 			<name>Takaichi District</name>
 			<styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
 			<Point>
