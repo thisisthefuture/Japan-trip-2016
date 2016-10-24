@@ -49,6 +49,7 @@
     strokeOpacity: 1,
     scale: 2
   };
+  var lineSymbol_arrow;
   var geodesicPoly_map, geodesicPoly_inset;
 
   var markers = [];
@@ -85,7 +86,14 @@
 
     // needs to be defined in initMap()
     circlePath = google.maps.SymbolPath.CIRCLE;
-
+    lineSymbol_arrow = {
+              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+              strokeColor: '#991e40',
+              strokeOpacity: 1,
+              strokeWeight: 2.5,
+              anchor:  new google.maps.Point(0, -5), // offseting the arrowhead so it doesn't get obscured by the marker
+              zIndex: 10
+            };
     // for platting the path on the main map.
     geodesicPoly_map = new google.maps.Polyline({
       //  strokeColor: '#545454',
@@ -94,11 +102,15 @@
       geodesic: true,
       icons: [{
         icon: lineSymbol,
-        offset: '0',
+        offset: '0%',
         repeat: '20px'
+      }, {
+        icon: lineSymbol_arrow,
+        offset: '100%'
       }],
       map: map
     });
+
 
     // for plotting the path in the inset map.
     geodesicPoly_inset = new google.maps.Polyline({
@@ -110,6 +122,9 @@
         icon: lineSymbol,
         offset: '0',
         repeat: '20px'
+      }, {
+        icon: lineSymbol_arrow,
+        offset: '100%'
       }],
       map: insetMap
     });
@@ -316,7 +331,6 @@ document.onkeydown = function (e) {
     if (name == 'Takamatsu')
     {
       map.fitBounds(takamatsu_bounds);
-
     }
     else if (name == 'Matsuyama') {
       map.fitBounds(original_bounds);
