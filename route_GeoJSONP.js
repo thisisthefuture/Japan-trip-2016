@@ -2,6 +2,8 @@ eqfeed_callback_routes({
 "type": "FeatureCollection",
 
 "features": [
+{ "type": "Feature", "properties": { "Name": "Seattle", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ -122.4759888, 47.6147628, 0.0 ] } }
+,
 { "type": "Feature", "properties": { "Name": "Tokyo", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 139.691706, 35.689488, 0.0 ] } }
 ,
 { "type": "Feature", "properties": { "Name": "Takamatsu", "Description": "Known for Udon" }, "geometry": { "type": "Point", "coordinates": [ 134.046574, 34.342788, 0.0 ] } }
@@ -47,6 +49,7 @@ eqfeed_callback_routes({
 { "type": "Feature", "properties": { "Name": "Hakone", "Description": "Known for their hotsprings" }, "geometry": { "type": "Point", "coordinates": [ 139.10694, 35.232355, 0.0 ] } }
 ,
 { "type": "Feature", "properties": { "Name": "Tokyo", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 139.691706, 35.689488, 0.0 ] } }
-
+,
+{ "type": "Feature", "properties": { "Name": "Seattle", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ -122.4759888, 47.6147628, 0.0 ] } }
 ]
 });

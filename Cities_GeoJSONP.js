@@ -10,12 +10,12 @@ eqfeed_callback_cities({
 ,
 { "type": "Feature", "properties": { "Name": "Osaka", "Description": "Known for street food" }, "geometry": { "type": "Point", "coordinates": [ 135.502165, 34.693738, 0.0 ] } }
 ,
-{ "type": "Feature", "properties": { "Name": "Ishigaki", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 124.15558, 24.340661, 0.0 ] } }
-,
-{ "type": "Feature", "properties": { "Name": "Taketomi Island", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 124.0889373, 24.3222475, 0.0 ] } }
-,
-{ "type": "Feature", "properties": { "Name": "Iriomote-jima", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 123.8187977, 24.3300613, 0.0 ] } }
-,
+// { "type": "Feature", "properties": { "Name": "Ishigaki", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 124.15558, 24.340661, 0.0 ] } }
+// ,
+// { "type": "Feature", "properties": { "Name": "Taketomi Island", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 124.0889373, 24.3222475, 0.0 ] } }
+// ,
+// { "type": "Feature", "properties": { "Name": "Iriomote-jima", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 123.8187977, 24.3300613, 0.0 ] } }
+// ,
 { "type": "Feature", "properties": { "Name": "Himeji", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 134.685352800000032, 34.815149, 0.0 ] } }
 ,
 { "type": "Feature", "properties": { "Name": "Takaichi District", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 135.808993399999963, 34.4501055, 0.0 ] } }
