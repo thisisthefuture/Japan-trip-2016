@@ -34,7 +34,7 @@ eqfeed_callback_routes({
 ,
 { "type": "Feature", "properties": { "Name": "Osaka", "Description": "Known for street food" }, "geometry": { "type": "Point", "coordinates": [ 135.502165, 34.693738, 0.0 ] } }
 ,
-{ "type": "Feature", "properties": { "Name": "Himeji", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 134.691716, 34.839449, 0.0 ] } }
+{ "type": "Feature", "properties": { "Name": "Himeji", "Description": "" }, "geometry": { "type": "Point", "coordinates": [ 134.695944, 34.812672, 0.0 ] } } // original: 134.691716, 34.839449 
 ,
 { "type": "Feature", "properties": { "Name": "Osaka", "Description": "Known for street food" }, "geometry": { "type": "Point", "coordinates": [ 135.502165, 34.693738, 0.0 ] } }
 ,
