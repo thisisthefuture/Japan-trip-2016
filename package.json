@@ -1,0 +1,26 @@
+{
+  "name": "japan-trip-2016",
+  "version": "1.0.0",
+  "description": "Documenting my 2016 November Japan trip",
+  "main": "map.js",
+  "dependencies": {
+    "brfs": "^1.4.3",
+    "fs": "^0.0.1-security",
+    "browserify-fs": "^1.0.0",
+    "moment-timezone": "^0.5.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thisisthefuture/Japan-trip-2016.git"
+  },
+  "author": "thisisthefuture",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thisisthefuture/Japan-trip-2016/issues"
+  },
+  "homepage": "https://github.com/thisisthefuture/Japan-trip-2016#readme"
+}
