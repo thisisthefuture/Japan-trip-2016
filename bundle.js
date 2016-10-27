@@ -61,6 +61,7 @@ window.initMap = function() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 35.279295927636994, lng: 136.10520967187495},
     zoom: 6,
+    noClear: true,
     disableDefaultUI: true,
     styles: [{"featureType":"landscape","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","stylers":[{"saturation":-100},{"lightness":51},{"visibility":"simplified"}]},{"featureType":"road.highway","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"road.arterial","stylers":[{"saturation":-100},{"lightness":30},{"visibility":"on"}]},{"featureType":"road.local","stylers":[{"saturation":-100},{"lightness":40},{"visibility":"on"}]},{"featureType":"transit","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"administrative.province","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"on"},{"lightness":-25},{"saturation":-100}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]}]
 
@@ -129,34 +130,23 @@ window.initMap = function() {
   okinawa_bounds = new google.maps.LatLngBounds();
 
   addPlaces();
-
-  // var script_routes = document.createElement('script');
-  // script_routes.src = 'route_GeoJSONP.js';
-  // document.getElementsByTagName('head')[0].appendChild(script_routes);
-
-  // var script_cities = document.createElement('script');
-  // script_cities.src = 'Cities_GeoJSONP.js';
-  // document.getElementsByTagName('head')[0].appendChild(script_cities);
-  //
-  // var script_small_cities = document.createElement('script');
-  // script_small_cities.src = 'Okanawa_Cities_GeoJSONP.js';
-  // document.getElementsByTagName('head')[0].appendChild(script_small_cities);
-  //
-  // var script_small_cities_takamatsu = document.createElement('script');
-  // script_small_cities_takamatsu.src = 'Takamatsu_Islands_GeoJSONP.js';
-  // document.getElementsByTagName('head')[0].appendChild(script_small_cities_takamatsu);
-
-
 }
 
 function plotMarker(key) {
-  // console.log('plotting',places.places[key].coordinates);
   var circleImage = {
       url: 'public/img/Ellipse.png',
       size: new google.maps.Size(20, 20),
       origin: new google.maps.Point(0, 0),
       anchor: new google.maps.Point(10, 10)
     };
+
+  var selectedCircle = {
+    url: 'public/img/selectedCircle.png',
+    // size: new google.maps.Size(20, 20),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(10, 10)
+
+  }
 
   var marker = new google.maps.Marker({
     position: new google.maps.LatLng(places.places[key].coordinates[0], places.places[key].coordinates[1]),
@@ -208,8 +198,8 @@ function makeClusters() {
         width: 20,
       }],
       minimumClusterSize: 2,
-      gridSize: 20,
-      averageCenter: true,
+      gridSize: 15,
+      averageCenter: false,
       imagePath: 'public/img'
   };
 
@@ -229,8 +219,6 @@ function addPlaces() {
 
 var path = [];
 function showPath() {
-  // Seattle: -122.4759888, 47.6147628
-
 
   path.push([
     {lat: places.places['Seattle'].coordinates[0], lng: places.places['Seattle'].coordinates[1]},
@@ -401,13 +389,23 @@ document.onkeyup = function (e) {
   if (e.which == 39) {
     isNextKey = false;
   }
+  if (e.which == 27) {
+    isNextKey = false;
+  }
 }
 // left arrow key action = 37
 
 // right arrow key action
 document.onkeydown = function (e) {
-if (e.which == 39 && dayNum < path.length) {
-  dayNum++;
+if (e.which == 37 && dayNum >= 0) {
+    console.log('back?');
+    dayNum--;
+    isNextKey = true;
+    geodesicPoly_map.setPath(path[dayNum]);
+}
+else if (e.which == 39 && dayNum < path.length - 1) {
+  // dayNum++;
+  dayNum = 5;
   isNextKey = true;
 
   var coordinates = path[dayNum][1];
@@ -421,27 +419,21 @@ if (e.which == 39 && dayNum < path.length) {
 
   var name = Object.keys(places.places).find(nameByCoords, coordinates);
 
-  console.log('name', name);
-
   if (name == 'Takamatsu')
   {
-    console.log('1', dayNum);
     map.fitBounds(takamatsu_bounds);
   }
-  else if (name == 'Matsuyama') {
+  else if (name == 'Matsuyama' && !original_bounds.equals(map.getBounds())) {
     map.fitBounds(original_bounds);
     map.setZoom(6);
-        console.log('2', dayNum);
   }
   else if (name == 'Hiroshima') {
       map.fitBounds(hiroshima_bounds);
-      console.log('2.5', dayNum);
   }
   else if (name == 'Osaka') {
     // map.setZoom(6);
       map.fitBounds(kansai_bounds);
       document.getElementById('insetMap').style.display = 'initial';
-      console.log('2', dayNum);
   }
   else if (name == 'Ishigaki') {
     map.fitBounds(okinawa_bounds);
@@ -449,188 +441,16 @@ if (e.which == 39 && dayNum < path.length) {
   }
   else if (name == 'Himeji') {
     map.fitBounds(kansai_bounds, dayNum);
-    console.log('3');
   }
   else if (name == 'Tokyo' && !original_bounds.equals(map.getBounds())) {
     map.fitBounds(original_bounds);
     map.setZoom(6);
-        console.log('4', dayNum);
   }
-  else {
-    console.log('errr...', name, dayNum);
-  }
-  //
-  // if (name == 'Osaka' || markers_smallcities.filter(checkName).length > 0) {
-  //   path_inset.push(tripPath[tripPathCounter].position);
-  //   geodesicPoly_inset.setPath(path_inset);
-  // }
+
   geodesicPoly_map.setPath(path[dayNum]);
-  // setInterval(function () {
-  //   animateDashed();
-  // }, 20);
 
   }
 }
-
-// maps the cities near Takamatsu
-// window.eqfeed_callback_cities_takamatsu = function(results) {
-//   var circleImage = {
-//     url: 'public/img/Ellipse.png',
-//     size: new google.maps.Size(25, 25),
-//     origin: new google.maps.Point(0, 0),
-//     anchor: new google.maps.Point(12.5, 12.5)
-//   };
-//
-//   for (var i = 0; i < results.features.length; i++) {
-//     var coords = results.features[i].geometry.coordinates;
-//     var latLng = new google.maps.LatLng(coords[1],coords[0]);
-//     var marker = new google.maps.Marker({
-//       position: latLng,
-//       icon: circleImage,
-//       cursor: null,
-//       map: map
-//     });
-//     markers_takamatsu_islands.push(marker);
-//
-//   }
-//
-//   takamatsu_bounds = new google.maps.LatLngBounds();
-//   for (var i = 0 ; i < markers_takamatsu_islands.length; i++) {
-//     takamatsu_bounds.extend(markers_takamatsu_islands[i].getPosition());
-//   }
-//
-//   var markerCluster_takamatsu = new MarkerClusterer(map, markers_takamatsu_islands,
-//     {
-//       styles: [{
-//         url: 'public/img/Ellipse.png',
-//         height: 25,
-//         width: 25,
-//       }],
-//       minimumClusterSize: 2,
-//       averageCenter: true,
-//       imagePath: 'public/img'
-//     }
-//   );
-// }
-//
-// // maps the small cities for the mini-map
-// window.eqfeed_callback_cities_small = function(results) {
-//
-//   var markers_okinawa = [];
-//   var circleImage = {
-//     url: 'public/img/Ellipse.png',
-//     size: new google.maps.Size(25, 25),
-//     origin: new google.maps.Point(0, 0),
-//     anchor: new google.maps.Point(12.5, 12.5)
-//   };
-//
-//   for (var i = 0; i < results.features.length; i++) {
-//     var coords = results.features[i].geometry.coordinates;
-//     var latLng = new google.maps.LatLng(coords[1],coords[0]);
-//
-//     // these markers are for the inset map and do not go into a MarkerClusterer
-//     var marker_inset = new google.maps.Marker({
-//       position: latLng,
-//       icon: circleImage,
-//       map: insetMap
-//     });
-//
-//     // these markers will go on the main/large map and will go into a MarkerClusterer
-//     var marker = new google.maps.Marker({
-//       position: latLng,
-//       icon: circleImage,
-//       map: map
-//     });
-//
-//     markers_smallcities.push({'name': results.features[i].properties.Name, 'position': marker_inset.getPosition()});;
-//     markers_okinawa.push(marker);
-//
-//   }
-//
-//
-//
-//   var markerCluster_okinawa = new MarkerClusterer(map, markers_okinawa,
-//     {
-//       styles: [{
-//         url: 'public/img/Ellipse.png',
-//         height: 25,
-//         width: 25,
-//       }],
-//       minimumClusterSize: 2,
-//       averageCenter: true,
-//       imagePath: 'public/img'
-//     }
-//   );
-//
-//   // insetMap.addListener('center_changed', function () {
-//   //   console.log("new center: " + insetMap.getCenter());
-//   // //  geodesicPoly.setPath(markerCluster.getClusterCenters());
-//   // });
-// }
-//
-// // maps all the cities
-// window.eqfeed_callback_cities = function(results) {
-//   kansai_bounds = new google.maps.LatLngBounds();
-//
-//   var circleImage = {
-//     url: 'public/img/Ellipse.png',
-//     size: new google.maps.Size(25, 25),
-//     origin: new google.maps.Point(0, 0),
-//     anchor: new google.maps.Point(12.5, 12.5)
-//   };
-//
-//   for (var i = 0; i < results.features.length; i++) {
-//     var coords = results.features[i].geometry.coordinates;
-//     var latLng = new google.maps.LatLng(coords[1],coords[0]);
-//     var marker = new google.maps.Marker({
-//       position: latLng,
-//       icon: circleImage,
-//       map: map
-//     });
-//     markers.push(marker);
-//     var name = results.features[i].properties.Name;
-//     if (name == 'Himeji' || name == 'Kyoto' || name == 'Takaichi District')
-//     {
-//       kansai_bounds.extend(marker.getPosition());
-//     }
-//   }
-//
-//
-// //  geodesicPoly.setPath(markerCluster.getClusterCenters());
-//   // map.addListener('center_changed', function () {
-//   //   console.log("new center: " + map.getCenter());
-//   //   //geodesicPoly.setPath(markerCluster.getClusterCenters());
-//   // });
-// }
-//
-// // maps the routes
-// window.eqfeed_callback_routes = function(results) {
-//   var circleImage = {
-//     url: 'public/img/Ellipse.png',
-//     size: new google.maps.Size(25, 25),
-//     origin: new google.maps.Point(0, 0),
-//     anchor: new google.maps.Point(12.5, 12.5)
-//   };
-//
-//   for (var i = 0; i < results.features.length; i++) {
-//     var coords = results.features[i].geometry.coordinates;
-//     var latLng = new google.maps.LatLng(coords[1],coords[0]);
-//     var marker = new google.maps.Marker({
-//       position: latLng,
-//       icon: {
-//        path: circlePath,
-//        scale: 0
-//       },
-//       map: map
-//     });
-//     tripPath.push({'name': results.features[i].properties.Name, 'position': marker.getPosition()});
-//     //console.log(tripPath[tripPath.length-1].position);
-//   }
-// //   geodesicPoly.setPath(tripPath);
-//
-//
-// }
-//
 
 },{"./dateConverter.js":1,"./places.js":7}],3:[function(require,module,exports){
 module.exports={

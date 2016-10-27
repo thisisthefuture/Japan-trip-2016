@@ -31,6 +31,7 @@ window.initMap = function() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 35.279295927636994, lng: 136.10520967187495},
     zoom: 6,
+    noClear: true,
     disableDefaultUI: true,
     styles: [{"featureType":"landscape","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","stylers":[{"saturation":-100},{"lightness":51},{"visibility":"simplified"}]},{"featureType":"road.highway","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"road.arterial","stylers":[{"saturation":-100},{"lightness":30},{"visibility":"on"}]},{"featureType":"road.local","stylers":[{"saturation":-100},{"lightness":40},{"visibility":"on"}]},{"featureType":"transit","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"administrative.province","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"on"},{"lightness":-25},{"saturation":-100}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]}]
 
@@ -109,6 +110,14 @@ function plotMarker(key) {
       anchor: new google.maps.Point(10, 10)
     };
 
+  var selectedCircle = {
+    url: 'public/img/selectedCircle.png',
+    // size: new google.maps.Size(20, 20),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(10, 10)
+
+  }
+
   var marker = new google.maps.Marker({
     position: new google.maps.LatLng(places.places[key].coordinates[0], places.places[key].coordinates[1]),
     icon: circleImage,
@@ -159,8 +168,8 @@ function makeClusters() {
         width: 20,
       }],
       minimumClusterSize: 2,
-      gridSize: 20,
-      averageCenter: true,
+      gridSize: 15,
+      averageCenter: false,
       imagePath: 'public/img'
   };
 
@@ -350,12 +359,20 @@ document.onkeyup = function (e) {
   if (e.which == 39) {
     isNextKey = false;
   }
+  if (e.which == 27) {
+    isNextKey = false;
+  }
 }
 // left arrow key action = 37
 
 // right arrow key action
 document.onkeydown = function (e) {
-if (e.which == 39 && dayNum < path.length) {
+if (e.which == 37 && dayNum >= 0) {
+    dayNum--;
+    isNextKey = true;
+    geodesicPoly_map.setPath(path[dayNum]);
+}
+else if (e.which == 39 && dayNum < path.length - 1) {
   dayNum++;
   isNextKey = true;
 
@@ -374,7 +391,7 @@ if (e.which == 39 && dayNum < path.length) {
   {
     map.fitBounds(takamatsu_bounds);
   }
-  else if (name == 'Matsuyama') {
+  else if (name == 'Matsuyama' && !original_bounds.equals(map.getBounds())) {
     map.fitBounds(original_bounds);
     map.setZoom(6);
   }
